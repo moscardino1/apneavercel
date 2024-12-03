@@ -1,0 +1,45 @@
+start
+cd apneavercel
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+
+cd apneavercel
+source venv/bin/activate
+python app.py
+
+to dev test
+    vercel dev
+
+to deploy
+    vercel deploy
+
+to prod:
+    vercel --prod 
+
+python app.py
+pip freeze > requirements.txt
+
+Prompt
+I am creating a flask webapp to be deployed on vercel, structured like the following.  
+-static
+--css
+---styles.css
+--js
+---main.js
+-templates
+--index.html
+-app.py
+
+Please create ......
+based on a  modern, responsive css which emobodies creativity and usability. The webapp should feature:
+1. Clean and Intuitive Layout: Use a grid-based structure for easy navigation and organization of content.
+2. High-Quality Visuals: Incorporate striking images and animations that enhance the user experience without overwhelming the content.
+3. Bold Typography: Utilize a mix of bold headlines and readable body text to create a clear hierarchy.
+4. Interactive Elements: Include hover effects, transitions, and animations to engage users and provide feedback.
+5. Color Palette: Choose a harmonious color scheme that aligns with the brand identity while ensuring good contrast for readability.
+6. Responsive Design: Ensure the layout adapts seamlessly across devices, providing a great experience on both desktop and mobile.
+7. Unique Features: Integrate innovative elements such as parallax scrolling, micro-interactions, or custom illustrations to differentiate the design.
+8. User-Centric Navigation: Design an intuitive navigation system that allows users to easily find information and explore the site.
+Focus on creating a visually appealing and functional website that can stand out in the competitive landscape of award-winning designs."I just need you to help me change index.html, style.css, main.js to match the style in a website like https://www.awwwards.com.

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apnea - Musical Emotion Decoder</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="static/js/main.js" defer></script>
+</head>
+
+<body>
+    <div class="app-wrapper">
+        <header class="header">
+            <div class="container">
+                <nav class="navbar">
+                    <a href="#" class="logo">
+                        <svg width="120" height="40" viewBox="0 0 120 40">
+                            <text x="10" y="30" fill="#e94560" font-family="Space Mono" font-size="24">Apnea</text>
+                        </svg>
+                    </a>
+                    <div class="nav-links">
+                        <a href="#" class="nav-link">Discover</a>
+                        <a href="#" class="nav-link">Emotions</a>
+                        <a href="#" class="nav-link">About</a>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Decode Your Musical Emotions</h1>
+                        <p class="hero-subtitle">Discover the hidden emotional landscape of music</p>
+
+                        <div class="search-container">
+                            <input type="text" id="song-search" placeholder="Enter a song name..." class="search-input"
+                                aria-label="Search for a song" aria-describedby="search-instructions">
+                            <button id="search-btn" class="search-button" aria-label="Analyze song">
+                                Analyze
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="results" class="results-section">
+                <div class="container">
+                    <!-- Track Info -->
+                    <div class="result-grid">
+                        <div class="track-info card">
+                            <img id="album-art" class="album-art" alt="Album Art" />
+                            <div class="track-details">
+                                <h2 id="song-title" class="track-title">-</h2>
+                                <h3 id="artist-name" class="artist-name">-</h3>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Overview -->
+                        <div class="analysis-overview card">
+                            <h3 class="section-title">Analysis Overview</h3>
+                            <div class="overview-details">
+                                <div id="summary-display" class="summary-display">
+                                    <strong>Summary:</strong> No summary available.
+                                </div>
+                                <div id="sentiment-display" class="sentiment-display">
+                                    <strong>Sentiment:</strong> -
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Emotional Spectrum -->
+                        <div class="emotion-analysis card">
+                            <h3 class="section-title">Emotional Spectrum</h3>
+                            <div id="emotion-chart" class="emotion-visualization">
+                                <canvas></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Lyrics -->
+                        <div class="lyrics-container card">
+                            <h3 class="section-title">Lyrics</h3>
+                            <div id="lyrics-display" class="lyrics-display">No lyrics available.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <p>&copy; 2024 Apnea Music. Emotional Intelligence in Sound.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">Spotify</a>
+                        <a href="#" class="social-icon">GitHub</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
