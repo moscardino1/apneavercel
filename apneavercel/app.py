@@ -6,19 +6,20 @@ from flask_cors import CORS
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
 from dotenv import load_dotenv
-import os
-load_dotenv()
-# Hugging Face API endpoint and token
+import lyricsgenius
 
-# Configuration
+load_dotenv()
+
+# Configuration remains the same
 @dataclass
 class Config:
     SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
-    SPOTIFY_CLIENT_SECRET=os.getenv('SPOTIFY_CLIENT_SECRET')
-    MUSIXMATCH_API_KEY=os.getenv('MUSIXMATCH_API_KEY')
-    HUGGINGFACE_API_KEY=os.getenv('HUGGINGFACE_API_KEY')
-    GENIUS_CLIENT=os.getenv('GENIUS_CLIENT')
-    GENIUS_SECRET=os.getenv('GENIUS_SECRET')
+    SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+    GENIUS_CLIENT = os.getenv('GENIUS_CLIENT')
+    GENIUS_SECRET = os.getenv('GENIUS_SECRET')
+    GENIUS_TOKEN = os.getenv('GENIUS_TOKEN')
+    HUGGINGFACE_API_KEY = os.getenv('HUGGINGFACE_API_KEY')
+
 
 class APIClient:
     def __init__(self, api_key: str):
@@ -60,20 +61,18 @@ class SpotifyClient:
         )
         return response.json()['tracks']['items'][0] if response.json()['tracks']['items'] else None
 
-class LyricsClient:
-    def __init__(self, api_key: str):
-        self.api_key = api_key
 
-    def get_lyrics(self, artist: str, track: str) -> Dict:
-        response = requests.get(
-            "https://api.musixmatch.com/ws/1.1/matcher.lyrics.get",
-            params={
-                "apikey": self.api_key,
-                "q_track": track,
-                "q_artist": artist
-            }
-        )
-        return response.json()
+class LyricsClient:
+    def __init__(self, access_token: str):
+        self.genius = lyricsgenius.Genius(access_token)
+
+    def get_lyrics(self, artist: str, title: str) -> dict:
+        """Fetch lyrics for a given artist and song title."""
+        song = self.genius.search_song(title, artist)
+        if song:
+            return {"lyrics": song.lyrics}
+        else:
+            return {"lyrics": "Lyrics not found"}
 
 class NLPAnalyzer(APIClient):
     EMOTION_API_URL = "https://api-inference.huggingface.co/models/j-hartmann/emotion-english-distilroberta-base"
@@ -85,7 +84,14 @@ class NLPAnalyzer(APIClient):
         return result[0] if result else {}
 
     def summarize_text(self, text: str) -> str:
-        result = self.post_request(self.SUMMARIZATION_API_URL, {"inputs": text})
+        result = self.post_request(self.SUMMARIZATION_API_URL, {
+            "inputs": text,
+            "parameters": {
+                "max_length": 100,
+                "min_length": 30,
+                "do_sample": False
+            }
+        })
         return result[0]['summary_text'] if result else "Error in summarization"
 
     def analyze_sentiment(self, text: str) -> Dict:
@@ -98,8 +104,14 @@ CORS(app)
 # Initialize configuration and clients
 config = Config()
 spotify_client = SpotifyClient(config.SPOTIFY_CLIENT_ID, config.SPOTIFY_CLIENT_SECRET)
-lyrics_client = LyricsClient(config.MUSIXMATCH_API_KEY)
+lyrics_client = LyricsClient(config.GENIUS_TOKEN) #config.GENIUS_CLIENT, config.GENIUS_SECRET, 
 nlp_analyzer = NLPAnalyzer(config.HUGGINGFACE_API_KEY)
+
+def clean_lyrics(lyrics: str) -> str:
+    # Remove metadata and formatting
+    lines = lyrics.split('\n')
+    cleaned_lines = [line for line in lines if not line.startswith('[') and not 'Contributors' in line]
+    return ' '.join(cleaned_lines)
 
 @app.route('/search', methods=['POST'])
 def search_song():
@@ -116,17 +128,21 @@ def search_song():
             track['artists'][0]['name'], 
             track['name']
         )
-        lyrics = lyrics_response['message']['body']['lyrics']['lyrics_body']
+        lyrics = lyrics_response.get('lyrics', "No lyrics available")
     except Exception:
         lyrics = "No lyrics available"
 
+    cleaned_lyrics = clean_lyrics(lyrics)
+
     # Analyze text
     nlp_results = {
-        "emotions": nlp_analyzer.analyze_emotion(lyrics),
-        "summary": nlp_analyzer.summarize_text(lyrics),
-        "sentiment": nlp_analyzer.analyze_sentiment(lyrics)
+        "emotions": nlp_analyzer.analyze_emotion(cleaned_lyrics),
+        "summary": nlp_analyzer.summarize_text(cleaned_lyrics),
+        "sentiment": nlp_analyzer.analyze_sentiment(cleaned_lyrics)
     }
-    print(nlp_results)
+    print("artist and name:",track['artists'][0]['name'],  track['name'])
+    print("lyrics:" ,lyrics)
+    print("nlp_restul=",nlp_results)
     return jsonify({
         "track": {
             "name": track['name'],

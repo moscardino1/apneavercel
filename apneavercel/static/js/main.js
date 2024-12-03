@@ -97,18 +97,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function formatSentiment(sentimentData) {
-        if (!sentimentData || !sentimentData.length) return null;
+        if (!sentimentData || !sentimentData[0] || !sentimentData[0].length) return null;
         
         const sentiments = {
             'LABEL_0': 'Negative',
             'LABEL_1': 'Neutral',
             'LABEL_2': 'Positive'
         };
-
-        const topSentiment = sentimentData.reduce((prev, current) => 
+    
+        // Access the first array element since sentiment is double-nested
+        const sentimentArray = sentimentData[0];
+        
+        const topSentiment = sentimentArray.reduce((prev, current) => 
             (prev.score > current.score) ? prev : current
         );
-
+    
         return `${sentiments[topSentiment.label]} (${(topSentiment.score * 100).toFixed(2)}%)`;
     }
 
