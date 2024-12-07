@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="trending-container">
+    <h1>TRENDING THIS WEEK</h1>
+    <div class="trending-grid" id="trendingGrid">
+        <!-- Content will be loaded dynamically -->
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await fetch('/api/trending');
+        const songs = await response.json();
+        
+        const trendingGrid = document.getElementById('trendingGrid');
+        trendingGrid.innerHTML = songs.map(song => `
+            <div class="trending-card">
+                <div class="trending-image">
+                    <img src="${song.album_art || '/static/images/default-album.png'}" alt="${song.track_name}">
+                </div>
+                <div class="trending-info">
+                    <h3>${song.track_name}</h3>
+                    <p>${song.artist}</p>
+                    <div class="trending-stats">
+                        <span class="search-count">${song.search_count} searches</span>
+                        <a href="${song.spotify_url}" target="_blank" class="spotify-button">
+                            <i class="fab fa-spotify"></i> Listen
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading trending songs:', error);
+    }
+});
+</script>
+{% endblock %} 

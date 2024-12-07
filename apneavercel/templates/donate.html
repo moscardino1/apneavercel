@@ -1,22 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donate USDT</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 class="text-3xl font-bold mb-4 text-center">Support Us with USDT 💵</h1>
-        <p class="mb-4 text-center">If you appreciate our work and would like to support us, you can donate Tether (USDT) to the address below:</p>
-        <div class="bg-white shadow-md rounded-lg p-6 mb-4">
-            <h2 class="text-lg font-semibold text-center">USDT Address:</h2>
-            <p class="text-gray-600 break-all text-center">{{ usdt_address }}</p>
-        </div>
-        <h2 class="text-lg font-semibold mb-2 text-center">Scan to Donate:</h2>
-        <img src="data:image/png;base64,{{ qr_image }}" alt="QR Code" class="mb-4 mx-auto" />
+{% extends "base.html" %}
+
+{% block content %}
+<div class="donate-container">
+    <div class="donate-header">
+        <h1>SUPPORT APNEAMUSIC</h1>
+        <p class="subtitle">HELP US KEEP THE MUSIC ANALYSIS FLOWING</p>
     </div>
-</body>
-</html>
+
+    <div class="donate-content">
+        <div class="donate-card">
+            <div class="donate-icon">
+                <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <h3>SUPPORT OUR PROJECT</h3>
+            <p>Your contribution helps us maintain and improve APNEAMUSIC's features and infrastructure.</p>
+            
+            <div class="crypto-address">
+                <h4>USDT (ERC20)</h4>
+                <div class="address-container">
+                    <code id="usdtAddress">0xDC92534Be92780c87f232CD525D99e26892E15f7</code>
+                    <button onclick="copyAddress()" class="copy-btn">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div id="copyMessage" class="copy-message">Address copied!</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyAddress() {
+    const address = document.getElementById('usdtAddress').textContent;
+    navigator.clipboard.writeText(address);
+    
+    const message = document.getElementById('copyMessage');
+    message.style.opacity = '1';
+    setTimeout(() => {
+        message.style.opacity = '0';
+    }, 2000);
+}
+</script>
+{% endblock %} 
